@@ -27,15 +27,18 @@
 		height: 100%;
 	}
 	body {
-		width: 100%;
+		max-width: 640px;
+		min-width: 320px;
 		height: 100%;
+		margin: 0 auto;
 		font-size: 12px;
 		color: #666;
 		overflow-x: hidden;
+		// 父元素添加该属性，子元素绝对定位时
+		// 相对于该元素定位，而不是浏览器窗口
+		transform: translate(0, 0);
 	}
 	.g-body {
-		max-width: 640px;
-		min-width: 320px;
 		height: 100%;
 		width: 100%;
 		background: #FFF;
