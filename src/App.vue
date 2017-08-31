@@ -5,6 +5,7 @@
 			<app-nav></app-nav>
 			<router-view class="tab-content"></router-view>
 		</div>
+		<audio id="myaudio" src="http://music.163.com/m/song?id=502238220"></audio>
 	</div>
 </template>
 
