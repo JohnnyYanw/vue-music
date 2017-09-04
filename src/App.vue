@@ -1,24 +1,13 @@
 <template>
 	<div class="g-body">
-		<app-header></app-header>
-		<div class="g-content">
-			<app-nav></app-nav>
-			<router-view class="tab-content"></router-view>
-		</div>
-		<audio id="myaudio" src="http://music.163.com/m/song?id=502238220"></audio>
+		<router-view></router-view>
+		<audio id="myaudio"></audio>
 	</div>
 </template>
 
 <script>
-	import Header from 'pages/common/Header';
-	import Nav from 'pages/common/Nav';
-
 	export default {
-		name: 'app',
-		components: {
-			'app-header': Header,
-			'app-nav': Nav
-		}
+		name: 'app'
 	};
 </script>
 
@@ -42,12 +31,5 @@
 		height: 100%;
 		width: 100%;
 		background: #FFF;
-		.g-content {
-			padding-top: 40px;
-			.tab-content {
-				width: 100%;
-				height: 100%;
-			}
-		}
 	}
 </style>
