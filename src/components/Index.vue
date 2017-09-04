@@ -30,7 +30,7 @@
 								<div class="song-info song-name">{{item.name}}</div>
 								<div class="song-info song-singer">
 									<i class="icon icon-hot"></i>
-									<span class="art-name" v-for="art in item.ar">{{art.name}}&nbsp;/&nbsp;</span>
+									<span class="art-name" v-for="art in item.ar">{{art.name}}</span>
 									<span>&nbsp;-&nbsp;{{item.al.name}}</span>
 								</div>
 							</div>
@@ -69,7 +69,7 @@
 		},
 		methods: {
 			getRemdList() {
-				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 12, true, 6))
+				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 9, true, 6))
 					.then(res => {
 						// console.log(res);
 						if(res.status === 200) {
@@ -77,7 +77,7 @@
 							for(let i = 0; i < dataList.length; i += 3) {
 								this.remdList.push(dataList.slice(i, i + 3));
 							}
-							console.log(this.remdList);
+							// console.log(this.remdList);
 							this.isLoading = false;
 						}
 					})
@@ -88,11 +88,15 @@
 			getSongs() {
 				this.$http.get(this.Api.getPlayListDetail(900009693))
 					.then(res => {
-						console.log(res.data.playlist.tracks);
 						if(res.data.code === 200) {
 							this.songsList = res.data.playlist.tracks;
 							this.songsList.forEach((item, index) => {
-								console.log(item.ar);
+								if(item.ar.length > 1) {
+									for(let i = 0; i < item.ar.length - 1; i++) {
+										item.ar[i].name += '/'; 
+									}
+								}
+								// console.log(item.ar);
 							});
 							this.loading = false;
 						}
