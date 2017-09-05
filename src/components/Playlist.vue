@@ -1,6 +1,7 @@
 <template>
 	<div class="m-play-list">
 		<section class="list-head">
+			<a @click="$router.go(-1)" class="prev"></a>
 			<div class="head-bg" :style="'background-image: url(' + coverImg + ')'"></div>
 			<div class="head-wrap">
 				<div class="head-fl">
@@ -59,45 +60,74 @@
 				songsList: []
 			}
 		},
-		created() {
-			this.$nextTick(() => {
-				this.getPlayList();
-			})
+		beforeCreate() {
+			// this.getPlayList();
+			// 路由传过来的参数
+			// console.log(this.$route.query.id);
+			this.$http.get(this.Api.getPlayListDetail(this.$route.query.id))
+				.then(res => {
+					let playList = res.data.playlist;
+					console.log(playList);
+					this.coverImg = playList.coverImgUrl;
+					this.listTitle = playList.name;
+					this.creatorAvatar = playList.creator.avatarUrl;
+					this.creatorName = playList.creator.nickname;
+					this.tags = playList.tags;
+					this.desc = playList.description;
+					this.songsList = playList.tracks;
+					this.songsList.forEach((item, index) => {
+						let singers = [];
+						for(let i = 0; i < item.ar.length; i++) {
+							singers.push(item.ar[i].name);
+						}
+						for(let j = 0; j < singers.length - 1; j++) {
+							if(singers.length > 1) {
+								singers[j] += ' /';
+								singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+							}
+						}
+						item.singer = singers.join('');
+					});
+					// console.log(this.songsList);
+				})
+				.catch(err => {
+					console.log(err);
+				});
 		},
 		methods: {
-			getPlayList() {
-				// 路由传过来的参数
-				// console.log(this.$route.query.id);
-				this.$http.get(this.Api.getPlayListDetail(this.$route.query.id))
-					.then(res => {
-						let playList = res.data.playlist;
-						console.log(playList);
-						this.coverImg = playList.coverImgUrl;
-						this.listTitle = playList.name;
-						this.creatorAvatar = playList.creator.avatarUrl;
-						this.creatorName = playList.creator.nickname;
-						this.tags = playList.tags;
-						this.desc = playList.description;
-						this.songsList = playList.tracks;
-						this.songsList.forEach((item, index) => {
-							let singers = [];
-							for(let i = 0; i < item.ar.length; i++) {
-								singers.push(item.ar[i].name);
-							}
-							for(let j = 0; j < singers.length - 1; j++) {
-								if(singers.length > 1) {
-									singers[j] += ' /';
-									singers[singers.length - 1] = ' ' + singers[singers.length - 1];
-								}
-							}
-							item.singer = singers.join('');
-						});
-						// console.log(this.songsList);
-					})
-					.catch(err => {
-						console.log(err);
-					});
-			}
+			// getPlayList() {
+			// 	// 路由传过来的参数
+			// 	// console.log(this.$route.query.id);
+			// 	this.$http.get(this.Api.getPlayListDetail(this.$route.query.id))
+			// 		.then(res => {
+			// 			let playList = res.data.playlist;
+			// 			console.log(playList);
+			// 			this.coverImg = playList.coverImgUrl;
+			// 			this.listTitle = playList.name;
+			// 			this.creatorAvatar = playList.creator.avatarUrl;
+			// 			this.creatorName = playList.creator.nickname;
+			// 			this.tags = playList.tags;
+			// 			this.desc = playList.description;
+			// 			this.songsList = playList.tracks;
+			// 			this.songsList.forEach((item, index) => {
+			// 				let singers = [];
+			// 				for(let i = 0; i < item.ar.length; i++) {
+			// 					singers.push(item.ar[i].name);
+			// 				}
+			// 				for(let j = 0; j < singers.length - 1; j++) {
+			// 					if(singers.length > 1) {
+			// 						singers[j] += ' /';
+			// 						singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+			// 					}
+			// 				}
+			// 				item.singer = singers.join('');
+			// 			});
+			// 			// console.log(this.songsList);
+			// 		})
+			// 		.catch(err => {
+			// 			console.log(err);
+			// 		});
+			// }
 		}
 	});
 </script>
@@ -122,6 +152,17 @@
 	.m-play-list {
 		background-color: #F8F8F8;
 		min-height: 100%;
+		.prev {
+			position: absolute;
+			left: 10px;
+			top: 6px;
+			display: block;
+			width: 20px;
+			height: 20px;
+			background: url('../assets/images/back.png') no-repeat;
+			background-size: 20px;
+			z-index: 9;
+		}
 		.icon {
 			background: url(../assets/images/index_icon.png) no-repeat;
 			background-size: 166px 97px;
