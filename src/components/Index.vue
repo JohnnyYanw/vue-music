@@ -72,25 +72,27 @@
 				.catch(err => {
 					console.log(err);
 				});
-			this.$http.get(this.Api.getPlayListDetail(900009693))
+			// this.$http.get(this.Api.getPlayListDetail(900009693))
+			this.$http.get('/personalized/newsong')
 				.then(res => {
-					if(res.data.code === 200) {
-						this.songsList = res.data.playlist.tracks;
-						this.songsList.forEach((item, index) => {
-							let singers = [];
-							for(let i = 0; i < item.ar.length; i++) {
-								singers.push(item.ar[i].name);
-							}
-							for(let j = 0; j < singers.length - 1; j++) {
-								if(singers.length > 1) {
-									singers[j] += ' /';
-									singers[singers.length - 1] = ' ' + singers[singers.length - 1];
-								}
-							}
-							item.singer = singers.join('');
-						});
-						this.loading = false;
-					}
+					console.log(res);
+					// if(res.data.code === 200) {
+					// 	this.songsList = res.data.playlist.tracks;
+					// 	this.songsList.forEach((item, index) => {
+					// 		let singers = [];
+					// 		for(let i = 0; i < item.ar.length; i++) {
+					// 			singers.push(item.ar[i].name);
+					// 		}
+					// 		for(let j = 0; j < singers.length - 1; j++) {
+					// 			if(singers.length > 1) {
+					// 				singers[j] += ' /';
+					// 				singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+					// 			}
+					// 		}
+					// 		item.singer = singers.join('');
+					// 	});
+					// 	this.loading = false;
+					// }
 				})
 				.catch(err => {
 					console.log(err);
@@ -102,6 +104,9 @@
 			}
 		},
 		methods: {
+			
+		},
+		mounted() {
 			
 		}
 	}
