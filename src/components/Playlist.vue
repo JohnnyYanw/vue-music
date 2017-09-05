@@ -95,39 +95,7 @@
 				});
 		},
 		methods: {
-			// getPlayList() {
-			// 	// 路由传过来的参数
-			// 	// console.log(this.$route.query.id);
-			// 	this.$http.get(this.Api.getPlayListDetail(this.$route.query.id))
-			// 		.then(res => {
-			// 			let playList = res.data.playlist;
-			// 			console.log(playList);
-			// 			this.coverImg = playList.coverImgUrl;
-			// 			this.listTitle = playList.name;
-			// 			this.creatorAvatar = playList.creator.avatarUrl;
-			// 			this.creatorName = playList.creator.nickname;
-			// 			this.tags = playList.tags;
-			// 			this.desc = playList.description;
-			// 			this.songsList = playList.tracks;
-			// 			this.songsList.forEach((item, index) => {
-			// 				let singers = [];
-			// 				for(let i = 0; i < item.ar.length; i++) {
-			// 					singers.push(item.ar[i].name);
-			// 				}
-			// 				for(let j = 0; j < singers.length - 1; j++) {
-			// 					if(singers.length > 1) {
-			// 						singers[j] += ' /';
-			// 						singers[singers.length - 1] = ' ' + singers[singers.length - 1];
-			// 					}
-			// 				}
-			// 				item.singer = singers.join('');
-			// 			});
-			// 			// console.log(this.songsList);
-			// 		})
-			// 		.catch(err => {
-			// 			console.log(err);
-			// 		});
-			// }
+			
 		}
 	});
 </script>

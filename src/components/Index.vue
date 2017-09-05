@@ -71,7 +71,7 @@
 				})
 				.catch(err => {
 					console.log(err);
-				})
+				});
 			this.$http.get(this.Api.getPlayListDetail(900009693))
 				.then(res => {
 					if(res.data.code === 200) {
@@ -94,7 +94,7 @@
 				})
 				.catch(err => {
 					console.log(err);
-				})
+				});
 		},
 		filters: {
 			formatCount(val, type) {
@@ -102,48 +102,7 @@
 			}
 		},
 		methods: {
-			// getRemdList() {
-			// 	this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 0, true, 6))
-			// 		.then(res => {
-			// 			// console.log(res);
-			// 			if(res.status === 200) {
-			// 				let dataList = res.data.playlists;
-			// 				for(let i = 0; i < dataList.length; i += 3) {
-			// 					this.remdList.push(dataList.slice(i, i + 3));
-			// 				}
-			// 				// console.log(this.remdList);
-			// 				this.isLoading = false;
-			// 			}
-			// 		})
-			// 		.catch(err => {
-			// 			console.log(err);
-			// 		})
-			// },
-			// getSongs() {
-			// 	this.$http.get(this.Api.getPlayListDetail(900009693))
-			// 		.then(res => {
-			// 			if(res.data.code === 200) {
-			// 				this.songsList = res.data.playlist.tracks;
-			// 				this.songsList.forEach((item, index) => {
-			// 					let singers = [];
-			// 					for(let i = 0; i < item.ar.length; i++) {
-			// 						singers.push(item.ar[i].name);
-			// 					}
-			// 					for(let j = 0; j < singers.length - 1; j++) {
-			// 						if(singers.length > 1) {
-			// 							singers[j] += ' /';
-			// 							singers[singers.length - 1] = ' ' + singers[singers.length - 1];
-			// 						}
-			// 					}
-			// 					item.singer = singers.join('');
-			// 				});
-			// 				this.loading = false;
-			// 			}
-			// 		})
-			// 		.catch(err => {
-			// 			console.log(err);
-			// 		})
-			// }
+			
 		}
 	}
 </script>
