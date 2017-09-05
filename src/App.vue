@@ -1,7 +1,9 @@
 <template>
 	<div class="g-body">
 		<router-view></router-view>
-		<audio id="myaudio"></audio>
+		<div class="audio-box">
+			<audio id="myaudio"></audio>
+		</div>
 	</div>
 </template>
 
@@ -31,5 +33,9 @@
 		height: 100%;
 		width: 100%;
 		background: #FFF;
+		.loading-img {
+			font-size: 0;
+			text-align: center;
+		}
 	}
 </style>

@@ -24,6 +24,9 @@ const routes = [
 	}, {
 		path: '/playlist',
 		component: resolve => require(['pages/Playlist'], resolve)
+	}, {
+		path: '/songs',
+		component: resolve => require(['pages/Songs'], resolve)
 	}
 ];
 

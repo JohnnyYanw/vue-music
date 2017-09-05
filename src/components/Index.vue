@@ -24,14 +24,12 @@
 					<img src="../assets/images/loading.gif">
 				</div>
 				<div class="new-songs">
-					<router-link class="song-item" :to="{path: 'playlist', query: {id: item.al.id}}" v-for="(item, index) in songsList" :key="index">
+					<router-link class="song-item" :to="{path: 'songs', query: {id: item.al.id}}" v-for="(item, index) in songsList" :key="index">
 						<div class="item-bd">
 							<div class="item-left">
 								<div class="song-info song-name">{{item.name}}</div>
 								<div class="song-info song-singer">
-									<i class="icon icon-hot"></i>
-									<span class="art-name" v-for="art in item.ar">{{art.name}}</span>
-									<span>&nbsp;-&nbsp;{{item.al.name}}</span>
+									<i class="icon icon-hot"></i>{{item.singer}}&nbsp;-&nbsp;{{item.al.name}}
 								</div>
 							</div>
 							<div class="item-right">
@@ -69,7 +67,7 @@
 		},
 		methods: {
 			getRemdList() {
-				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 9, true, 6))
+				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 0, true, 6))
 					.then(res => {
 						// console.log(res);
 						if(res.status === 200) {
@@ -91,12 +89,17 @@
 						if(res.data.code === 200) {
 							this.songsList = res.data.playlist.tracks;
 							this.songsList.forEach((item, index) => {
-								if(item.ar.length > 1) {
-									for(let i = 0; i < item.ar.length - 1; i++) {
-										item.ar[i].name += '/'; 
+								let singers = [];
+								for(let i = 0; i < item.ar.length; i++) {
+									singers.push(item.ar[i].name);
+								}
+								for(let j = 0; j < singers.length - 1; j++) {
+									if(singers.length > 1) {
+										singers[j] += ' /';
+										singers[singers.length - 1] = ' ' + singers[singers.length - 1];
 									}
 								}
-								// console.log(item.ar);
+								item.singer = singers.join('');
 							});
 							this.loading = false;
 						}
@@ -135,10 +138,6 @@
 					height: 16px;
 					background-color: #d33a31;
 				}
-			}
-			.loading-img {
-				font-size: 0;
-				text-align: center;
 			}
 			.remd-songs {
 				position: relative;
@@ -218,7 +217,7 @@
 						}
 						.item-left {
 							flex: 1;
-							width: 0;
+							width: 0%;
 							padding: 5px 0;
 							.song-info {
 								width: 100%;
@@ -227,17 +226,17 @@
 								text-overflow: ellipsis;
 							}
 							.song-singer {
-								font-size: 0;
+								position: relative;
+								padding-left: 16px;
+								font-size: 12px;
 								color: #888;
 								.icon-hot {
+									position: absolute;
+									left: 0;
+									top: 5px;
 									display: inline-block;
 									width: 12px;
 									height: 8px;
-									margin-right: 4px;
-								}
-								span {
-									display: inline-block;
-									font-size: 12px;
 								}
 							}
 						}
