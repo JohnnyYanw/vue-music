@@ -30,7 +30,7 @@
 		<div class="play-list">
 			<h3 class="list-title">歌曲列表</h3>
 			<div class="list-songs">
-				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id}, params: {imgUrl: item.al.picUrl}}" :key="index">
+				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
 					<div class="item-fl">{{index + 1}}</div>
 					<div class="item-fr t-bd">
 						<div class="item-left">

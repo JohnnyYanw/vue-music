@@ -20,7 +20,7 @@
 				<h2 class="item-title">最新音乐</h2>
 				<div class="new-songs">
 					<div class="loading-img" v-show="loading"></div>
-					<router-link class="song-item" v-for="(item, index) in songsList" :to="{path: 'song', query: {id: item.id}, params: {imgUrl: item.al.picUrl}}" :key="index">
+					<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
 						<div class="item-bd">
 							<div class="item-left">
 								<div class="song-info song-name">{{item.name}}</div>

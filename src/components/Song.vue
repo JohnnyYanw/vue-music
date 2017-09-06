@@ -55,8 +55,8 @@
 					});
 			},
 			getSong() {
-				// console.log(this.$route);
-				this.bgImg = this.$route.params.imgUrl;
+				console.log(this.$route);
+				this.bgImg = this.$route.query.imgUrl;
 				let songId = this.$route.query.id;
 				this.$http.get(this.Api.getSong(songId))
 					.then(res => {
