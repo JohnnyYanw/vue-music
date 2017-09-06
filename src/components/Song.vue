@@ -10,7 +10,7 @@
 							<img :src="bgImg">
 						</div>
 					</div>
-					<span class="m-song-plybtn"></span>
+					<span class="m-song-plybtn" v-show="isStop" @click="getSong"></span>
 				</div>
 			</div>
 			<div class="m-song-info"></div>
@@ -28,7 +28,8 @@
 			return {
 				bgImg: '',
 				audiourl: '',
-				lrcTxt: ''
+				lrcTxt: '',
+				isStop: false
 			}
 		},
 		created() {
@@ -37,11 +38,11 @@
 				this.getSong();
 			});
 		},
-		watch: {
-			'$route'(to, from) {
-				this.getSong();
-			}
-		},
+		// watch: {
+		// 	'$route'(to, from) {
+		// 		this.getSong();
+		// 	}
+		// },
 		methods: {
 			getLrc() {
 				let songId = this.$route.query.id;
@@ -55,12 +56,12 @@
 					});
 			},
 			getSong() {
-				console.log(this.$route);
+				// console.log(this.$route);
 				this.bgImg = this.$route.query.imgUrl;
 				let songId = this.$route.query.id;
 				this.$http.get(this.Api.getSong(songId))
 					.then(res => {
-						console.log(res.data);
+						// console.log(res.data);
 						if(res.data.code === 200) {
 							let resData = res.data.data;
 							this.audiourl = resData[0].url;
@@ -133,6 +134,17 @@
 				width: 248px;
 				height: 248px;
 				margin: 0 auto;
+				&::after {
+					content: " ";
+					position: absolute;
+					top: -63px;
+					left: 107px;
+					width: 84px;
+					height: 122px;
+					background: url(../assets/images/needle.png) no-repeat;
+					background-size: contain;
+					z-index: 5;
+				}
 			}
 			.m-song-turn {
 				width: 100%;
@@ -156,11 +168,6 @@
 					z-index: 3;
 					animation: circling 20s linear infinite;
 				}
-				.m-song-img, .m-song-plybtn {
-					position: absolute;
-					left: 50%;
-					top: 50%;
-				}
 				.m-song-img {
 					width: 150px;
 					height: 150px;
@@ -178,6 +185,19 @@
 					}
 				}
 			}
+			.m-song-img, .m-song-plybtn {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+			}
+			.m-song-plybtn {
+				width: 50px;
+				height: 50px;
+				transform: translate(-50%, -50%);
+				background: url(../assets/images/play-icon.png) left top no-repeat;
+				background-size: contain;
+				z-index: 10;
+			}
 		}
 		@media screen and (min-width: 360px) {
 			.m-song-wrap {
@@ -185,6 +205,13 @@
 				.m-song-disc {
 					width: 296px;
 					height: 296px;
+					&::after {
+						top: -70px;
+						left: 133px;
+						width: 96px;
+						height: 137px;
+						background-image: url(../assets/images/needle-w.png);
+					}
 				}
 				.m-song-turn {
 					&::before {
@@ -199,6 +226,10 @@
 						margin-top: -92px;
 						margin-left: -92px;
 					}
+				}
+				.m-song-plybtn {
+					width: 56px;
+					height: 56px;
 				}
 			}
 		}
