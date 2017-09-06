@@ -1,5 +1,6 @@
 <template>
 	<div class="m-play-list">
+		<div class="loading-img" v-show="isLoading"></div>
 		<section class="list-head">
 			<a @click="$router.go(-1)" class="prev"></a>
 			<div class="head-bg" :style="'background-image: url(' + coverImg + ')'"></div>
@@ -29,7 +30,7 @@
 		<div class="play-list">
 			<h3 class="list-title">歌曲列表</h3>
 			<div class="list-songs">
-				<router-link class="song-item" :to="{path: 'songs', query: {id: item.al.id}}" v-for="(item, index) in songsList" :key="index">
+				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id}, params: {imgUrl: item.al.picUrl}}" :key="index">
 					<div class="item-fl">{{index + 1}}</div>
 					<div class="item-fr t-bd">
 						<div class="item-left">
@@ -51,6 +52,7 @@
 		name: 'playlist',
 		data() {
 			return {
+				isLoading: true,
 				coverImg: '',
 				listTitle: '',
 				creatorAvatar: '',
@@ -67,7 +69,7 @@
 			this.$http.get(this.Api.getPlayListDetail(this.$route.query.id))
 				.then(res => {
 					let playList = res.data.playlist;
-					console.log(playList);
+					// console.log(playList);
 					this.coverImg = playList.coverImgUrl;
 					this.listTitle = playList.name;
 					this.creatorAvatar = playList.creator.avatarUrl;
@@ -89,9 +91,11 @@
 						item.singer = singers.join('');
 					});
 					// console.log(this.songsList);
+					this.isLoading = false;
 				})
 				.catch(err => {
 					console.log(err);
+					this.isLoading = false;
 				});
 		},
 		methods: {
@@ -127,7 +131,7 @@
 			display: block;
 			width: 20px;
 			height: 20px;
-			background: url('../assets/images/back.png') no-repeat;
+			background: url(../assets/images/back.png) no-repeat;
 			background-size: 20px;
 			z-index: 9;
 		}
@@ -252,6 +256,7 @@
 					display: -webkit-box;
 					-webkit-line-clamp: 3;
 					-webkit-box-orient: vertical;
+					white-space: normal;
 				}
 			}
 		}

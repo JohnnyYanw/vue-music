@@ -3,10 +3,8 @@
 		<div class="tab-recommend">
 			<div class="remd-item">
 				<h2 class="item-title">推荐歌单</h2>
-				<div class="loading-img" v-show="isLoading">
-					<img src="../assets/images/loading.gif">
-				</div>
 				<div class="remd-songs">
+					<div class="loading-img" v-show="isLoading"></div>
 					<div class="remd-ul" v-for="list in remdList">
 						<router-link class="remd-li" v-for="(item, i) in list" :to="{path: 'playlist', query: {id: item.id}}" :key="i">
 							<dl>
@@ -20,11 +18,9 @@
 					</div>
 				</div>
 				<h2 class="item-title">最新音乐</h2>
-				<div class="loading-img" v-show="loading">
-					<img src="../assets/images/loading.gif">
-				</div>
 				<div class="new-songs">
-					<router-link class="song-item" :to="{path: 'songs', query: {id: item.al.id}}" v-for="(item, index) in songsList" :key="index">
+					<div class="loading-img" v-show="loading"></div>
+					<router-link class="song-item" v-for="(item, index) in songsList" :to="{path: 'song', query: {id: item.id}, params: {imgUrl: item.al.picUrl}}" :key="index">
 						<div class="item-bd">
 							<div class="item-left">
 								<div class="song-info song-name">{{item.name}}</div>
@@ -55,9 +51,7 @@
 			}
 		},
 		beforeCreate() {
-			// this.getRemdList();
-			// this.getSongs();
-			this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 0, true, 6))
+			this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 3, true, 9))
 				.then(res => {
 					// console.log(res);
 					if(res.status === 200) {
@@ -71,10 +65,11 @@
 				})
 				.catch(err => {
 					console.log(err);
+					this.isLoading = false;
 				});
 			this.$http.get(this.Api.getPlayListDetail(900009693))
 				.then(res => {
-					console.log(res);
+					// console.log(res);
 					if(res.data.code === 200) {
 						this.songsList = res.data.playlist.tracks;
 						this.songsList.forEach((item, index) => {
@@ -95,6 +90,7 @@
 				})
 				.catch(err => {
 					console.log(err);
+					this.loading = false;
 				});
 		},
 		filters: {
@@ -102,10 +98,10 @@
 				return (val / 10000).toFixed(1) + type;
 			}
 		},
-		methods: {
+		mounted() {
 			
 		},
-		mounted() {
+		methods: {
 			
 		}
 	}
@@ -140,6 +136,7 @@
 			}
 			.remd-songs {
 				position: relative;
+				min-height: 20px;
 				padding-bottom: 20px;
 				.remd-ul {
 					display: flex;
@@ -190,6 +187,7 @@
 			}
 			.new-songs {
 				position: relative;
+				min-height: 20px;
 				.song-item {
 					display: flex;
 					padding-left: 10px;
