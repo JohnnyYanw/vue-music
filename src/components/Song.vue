@@ -4,19 +4,20 @@
 		<div class="m-song-bg" :style="'background-image: url(' + bgImg + '); opacity: 1;'"></div>
 		<div class="m-song-container">
 			<div class="m-song-wrap">
-				<div class="m-song-disc">
-					<div class="m-song-turn">
+				<div class="m-song-disc" :class="{'m-song-stop': isStop, 'm-song-pause': isPaused}">
+					<div class="m-song-turn" @click="pauseSong">
 						<div class="m-song-img">
 							<img :src="bgImg">
 						</div>
 					</div>
-					<span class="m-song-plybtn" v-show="isStop" @click="getSong"></span>
+					<span class="m-song-plybtn" v-if="isStop" @click="playSong"></span>
+					<span class="m-song-plybtn" v-else-if="isPaused" @click="playSong"></span>
 				</div>
 			</div>
 			<div class="m-song-info"></div>
 		</div>
 		<div class="audio-box">
-			<audio id="myaudio" :src="audiourl"></audio>
+			<audio id="myaudio" :src="audiourl" @ended="isStop = true"></audio>
 		</div>
 	</div>
 </template>
@@ -29,7 +30,8 @@
 				bgImg: '',
 				audiourl: '',
 				lrcTxt: '',
-				isStop: false
+				isStop: false,
+				isPaused: false
 			}
 		},
 		created() {
@@ -38,18 +40,17 @@
 				this.getSong();
 			});
 		},
-		// watch: {
-		// 	'$route'(to, from) {
-		// 		this.getSong();
-		// 	}
-		// },
+		watch: {
+			'$route'(to, from) {
+				this.getSong();
+			}
+		},
 		methods: {
 			getLrc() {
 				let songId = this.$route.query.id;
 				this.$http.get(this.Api.getLrc(songId))
 					.then(res => {
 						console.log(res.data);
-						// this.lrcTxt = 
 					})
 					.catch(err => {
 						console.log(err);
@@ -65,24 +66,32 @@
 						if(res.data.code === 200) {
 							let resData = res.data.data;
 							this.audiourl = resData[0].url;
-							// console.log(this.audiourl);
-							if(this.audiourl !== null) {
-								this.$nextTick(() => {
-									this.playSong();
-								});
-							} else {
-								alert('歌曲加载失败！');
-							}
+							this.$nextTick(() => {
+								this.playSong();
+							});
 						} else {
+							this.isStop = true;
 							alert('歌曲加载失败！');
 						}
 					})
 					.catch(err => {
+						this.isStop = true;
 						console.log(err);
 					});
 			},
 			playSong() {
-				document.getElementById('myaudio').play();
+				if(this.audiourl !== null) {
+					document.getElementById('myaudio').play();
+					this.isStop = false;
+					this.isPaused = false;
+				} else {
+					this.isStop = true;
+					alert('歌曲加载失败！');
+				}
+			},
+			pauseSong() {
+				document.getElementById('myaudio').pause();
+				this.isPaused = true;
 			}
 		}
 	});
@@ -106,12 +115,12 @@
 			z-index: 9;
 		}
 		.m-song-bg, .m-song-bg::after {
-				position: absolute;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				top: 0;
-				z-index: 2;
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			top: 0;
+			z-index: 2;
 		}
 		.m-song-bg {
 			background-position: 50%;
@@ -144,6 +153,8 @@
 					background: url(../assets/images/needle.png) no-repeat;
 					background-size: contain;
 					z-index: 5;
+					transition: transform .3s ease;
+					transform-origin: left top;
 				}
 			}
 			.m-song-turn {
@@ -197,6 +208,27 @@
 				background: url(../assets/images/play-icon.png) left top no-repeat;
 				background-size: contain;
 				z-index: 10;
+			}
+			.m-song-stop, .m-song-pause {
+				&::after {
+					transform: rotate(-20deg);
+				}
+			}
+			.m-song-pause {
+				.m-song-turn::after {
+					animation-play-state: paused;
+				}
+				.m-song-img {
+					animation-play-state: paused;
+				}
+			}
+			.m-song-stop {
+				.m-song-turn::after {
+					animation: none;
+				}
+				.m-song-img {
+					animation: none;
+				}
 			}
 		}
 		@media screen and (min-width: 360px) {
