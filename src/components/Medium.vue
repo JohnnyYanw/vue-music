@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="tab-content">
 		<app-header></app-header>
 		<div class="g-content">
 			<app-nav></app-nav>

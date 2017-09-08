@@ -1,39 +1,37 @@
 <template>
-	<div>
-		<div class="tab-recommend">
-			<div class="remd-item">
-				<h2 class="item-title">推荐歌单</h2>
-				<div class="remd-songs">
-					<div class="loading-img" v-show="isLoading"></div>
-					<div class="remd-ul" v-for="list in remdList">
-						<router-link class="remd-li" v-for="(item, i) in list" :to="{path: 'playlist', query: {id: item.id}}" :key="i">
-							<dl>
-								<dt>
-									<img :src="item.coverImgUrl">
-									<span class="audience-count">{{item.playCount | formatCount('万')}}</span>
-								</dt>
-								<dd>{{item.name}}</dd>
-							</dl>
-						</router-link>
-					</div>
-				</div>
-				<h2 class="item-title">最新音乐</h2>
-				<div class="new-songs">
-					<div class="loading-img" v-show="loading"></div>
-					<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
-						<div class="item-bd">
-							<div class="item-left">
-								<div class="song-info song-name">{{item.name}}</div>
-								<div class="song-info song-singer">
-									<i class="icon icon-hot"></i>{{item.singer}}&nbsp;-&nbsp;{{item.al.name}}
-								</div>
-							</div>
-							<div class="item-right">
-								<i class="icon icon-play"></i>
-							</div>
-						</div>
+	<div class="tab-recommend">
+		<div class="remd-item">
+			<h2 class="item-title">推荐歌单</h2>
+			<div class="remd-songs">
+				<div class="loading-img" v-show="isLoading"></div>
+				<div class="remd-ul" v-for="list in remdList">
+					<router-link class="remd-li" v-for="(item, i) in list" :to="{path: 'playlist', query: {id: item.id}}" :key="i">
+						<dl>
+							<dt>
+								<img :src="item.coverImgUrl">
+								<span class="audience-count">{{item.playCount | formatCount('万')}}</span>
+							</dt>
+							<dd>{{item.name}}</dd>
+						</dl>
 					</router-link>
 				</div>
+			</div>
+			<h2 class="item-title">最新音乐</h2>
+			<div class="new-songs">
+				<div class="loading-img" v-show="loading"></div>
+				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
+					<div class="item-bd">
+						<div class="item-left">
+							<div class="song-info song-name">{{item.name}}</div>
+							<div class="song-info song-singer">
+								<i class="icon icon-hot"></i>{{item.singer}}&nbsp;-&nbsp;{{item.al.name}}
+							</div>
+						</div>
+						<div class="item-right">
+							<i class="icon icon-play"></i>
+						</div>
+					</div>
+				</router-link>
 			</div>
 		</div>
 	</div>
@@ -109,8 +107,6 @@
 
 <style lang="less" scoped>
 	.tab-recommend {
-		width: 100%;
-		height: 100%;
 		.icon {
 			background: url(../assets/images/index_icon.png) no-repeat;
 			background-size: 166px 97px;

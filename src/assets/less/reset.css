@@ -3,5 +3,5 @@ html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acron
 body{font-family: Helvetica, Tahoma, Arial, "Microsoft YaHei", "微软雅黑", STXihei, "华文细黑", SimSun, "宋体", Heiti, "黑体", sans-serif!important; line-height: 1.5;}
 ul,li{list-style: none;}
 a{text-decoration: none;}
-input,img{border: none;}
-img{font-size: 0;}
+input,select, textarea{-webkit-appearance: none;border: none;outline: none;}
+img{border: none;font-size: 0;}
