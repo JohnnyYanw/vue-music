@@ -17,7 +17,7 @@
 			<div class="m-song-info"></div>
 		</div>
 		<div class="audio-box">
-			<audio id="myaudio" :src="audiourl" @ended="isStop = true"></audio>
+			<audio id="myaudio" :src="audiourl" @ended="isStop = true" loop></audio>
 		</div>
 	</div>
 </template>

@@ -105,22 +105,6 @@
 </script>
 
 <style lang="less" scoped>
-	.t-bd {
-		position: relative;
-		&::after {
-			position: absolute;
-			left: 0;
-			top: 0;
-			content: '';
-			width: 100%;
-			height: 100%;
-			box-sizing: border-box;
-			transform-origin: left top;
-			border: solid 0 rgba(0, 0, 0, .1);
-			pointer-events: none;
-			z-index: 2;
-		}
-	}
 	.m-play-list {
 		background-color: #F8F8F8;
 		min-height: 100%;

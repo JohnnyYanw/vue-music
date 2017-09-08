@@ -1,5 +1,5 @@
 <template>
-	<nav class="nav-tab">
+	<nav class="nav-tab t-bd">
 		<router-link class="tab-item" to="index">
 			<span class="tab-txt">推荐音乐</span>
 		</router-link>
@@ -30,16 +30,9 @@
 		line-height: 40px;
 		z-index: 99;
 		&::after {
-			position: absolute;
-			left: 0;
-			top: 0;
-			content: '';
-			width: 100%;
-			height: 100%;
-			box-sizing: border-box;
-			border-bottom: solid 1px #CCC;
-			z-index: 2;
-			pointer-events: none;
+			border-bottom-width: 1px;
+			border-color: #ccc;
+			z-index: 0;
 		}
 		.tab-item {
 			position: relative;
