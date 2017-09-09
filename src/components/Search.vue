@@ -3,7 +3,7 @@
 		<div class="input-wrap t-bd">
 			<div class="inputcover">
 				<i class="svg-icon search-icon"></i>
-				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" @keyup.enter="showResult(keyWords)" v-focus>
+				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" @keyup.enter="showResult(keyWords)" ref="key" v-focus>
 				<label class="holder" v-show="showHolder">搜索歌曲、歌手、专辑</label>
 				<figure class="close" @click="delKeyWords">
 					<i class="svg-icon close-icon" v-show="!showDefault"></i>
@@ -14,7 +14,7 @@
 			<section class="m-hotlist">
 				<h3 class="title">热门搜索</h3>
 				<ul class="list">
-					<li class="item t-bd" v-for="(item, index) in hotList" :key="index">
+					<li class="item t-bd" v-for="(item, index) in hotList" @click="showResult(item.first)" :key="index">
 						<a href="javascript: void(0);" class="link">{{item.first}}</a>
 					</li>
 				</ul>
@@ -24,7 +24,7 @@
 					<li class="item" v-for="(item, index) in hisList" :key="index">
 						<i class="svg-icon history-svg"></i>
 						<div class="history t-bd">
-							<span class="his-txt t-hide">{{item}}</span>
+							<span class="his-txt t-hide" @click="showResult(item)">{{item}}</span>
 							<figure class="del" @click="delHistory(index)">
 								<i class="svg-icon del-svg"></i>
 							</figure>
@@ -125,6 +125,7 @@
 				this.isLoading = true;
 				this.showDefault = false;
 				this.showResults = false;
+				this.keyWords = keyWords;
 				this.$http.get(this.Api.search(keyWords))
 					.then(res => {
 						// console.log(res.data);
