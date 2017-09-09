@@ -3,7 +3,7 @@
 		<div class="input-wrap t-bd">
 			<div class="inputcover">
 				<i class="svg-icon search-icon"></i>
-				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" @keyup.enter="showResult(keyWords)" ref="key" v-focus>
+				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" @keyup.enter="showResult(keyWords)" v-focus>
 				<label class="holder" v-show="showHolder">搜索歌曲、歌手、专辑</label>
 				<figure class="close" @click="delKeyWords">
 					<i class="svg-icon close-icon" v-show="!showDefault"></i>
