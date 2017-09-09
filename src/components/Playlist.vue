@@ -1,6 +1,6 @@
 <template>
 	<div class="m-play-list">
-		<div class="loading-img" v-show="isLoading"></div>
+		<div class="loading-img" v-if="isLoading"></div>
 		<section class="list-head">
 			<a @click="$router.go(-1)" class="prev"></a>
 			<div class="head-bg" :style="'background-image: url(' + coverImg + ')'"></div>

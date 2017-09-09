@@ -17,7 +17,7 @@
 			<div class="m-song-info"></div>
 		</div>
 		<div class="audio-box">
-			<audio id="myaudio" :src="audiourl" @ended="isStop = true" loop></audio>
+			<audio id="myaudio" :src="audiourl" @ended="isStop = true"></audio>
 		</div>
 	</div>
 </template>
@@ -50,7 +50,7 @@
 				let songId = this.$route.query.id;
 				this.$http.get(this.Api.getLrc(songId))
 					.then(res => {
-						console.log(res.data);
+						// console.log(res.data);
 					})
 					.catch(err => {
 						console.log(err);

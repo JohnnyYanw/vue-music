@@ -3,7 +3,7 @@
 		<div class="input-wrap t-bd">
 			<div class="inputcover">
 				<i class="svg-icon search-icon"></i>
-				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" v-focus>
+				<input type="search" class="search-input" v-model="keyWords" autocomplete="off" @input="getResult(keyWords, $event)" @keyup.enter="showResult(keyWords)" v-focus>
 				<label class="holder" v-show="showHolder">搜索歌曲、歌手、专辑</label>
 				<figure class="close" @click="delKeyWords">
 					<i class="svg-icon close-icon" v-show="!showDefault"></i>
@@ -21,11 +21,11 @@
 			</section>
 			<section class="m-history" v-if="hisList.length > 0">
 				<ul class="list">
-					<li class="item">
+					<li class="item" v-for="(item, index) in hisList" :key="index">
 						<i class="svg-icon history-svg"></i>
 						<div class="history t-bd">
-							<span class="his-txt t-hide"></span>
-							<figure class="del">
+							<span class="his-txt t-hide">{{item}}</span>
+							<figure class="del" @click="delHistory(index)">
 								<i class="svg-icon del-svg"></i>
 							</figure>
 						</div>
@@ -33,15 +33,34 @@
 				</ul>
 			</section>
 		</div>
-		<div class="m-list" v-if="!showDefault">
+		<div class="m-list" v-if="showResults">
 			<section class="list-wrap">
-				<h3 class="title t-bd">搜索“{{keyWords}}”</h3>
-				<ul>
+				<h3 class="title t-bd" @click="showResult(keyWords)">搜索“{{keyWords}}”</h3>
+				<!-- <ul>
 					<li class="item">
 						<i class="svg-icon search-svg"></i>
-						<span class="t-bd t-hide">韩国</span>
+						<span class="t-bd t-hide">薛之谦</span>
 					</li>
-				</ul>
+				</ul> -->
+			</section>
+		</div>
+		<div class="loading-img" v-if="isLoading"></div>
+		<div class="m-search-result" v-if="showList">
+			<section class="m-song-list">
+				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
+					<div class="item-wrap t-bd">
+						<div class="item-img">
+							<img :src="item.al.picUrl">
+						</div>
+						<div class="item-info">
+							<div class="song-info song-name">{{item.name}}</div>
+							<div class="song-info song-singer">{{item.singer}}&nbsp;-&nbsp;{{item.al.name}}</div>
+						</div>
+						<div class="item-icon">
+							<i class="icon icon-play"></i>
+						</div>
+					</div>
+				</router-link>
 			</section>
 		</div>
 	</div>
@@ -52,15 +71,21 @@
 		name: 'search',
 		data() {
 			return {
-				showDefault: true,
 				keyWords: '',
+				isLoading: false,
+				showDefault: true,
+				showResults: false,
+				showList: false,
 				hotList: [],
+				songsList: [],
 				hisList: []
 			}
 		},
 		mounted() {
 			this.$nextTick(() => {
 				this.getHotList();
+				this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
+				// console.log(this.hisList);
 			})
 		},
 		computed: {
@@ -77,7 +102,6 @@
 			getHotList() {
 				this.$http.get('/static/hot.json')
 					.then(res => {
-						console.log(res.data);
 						if(res.data.code === 200) {
 							this.hotList = res.data.result.hots;
 						}
@@ -87,24 +111,68 @@
 					})
 			},
 			getResult(keyWords, evt) {
-				console.log(evt.target.value);
 				if(evt.target.value !== '') {
 					this.showDefault = false;
+					this.showResults = true;
+					this.showList = false;
 					this.keyWords = evt.target.value;
-					this.$http.get(this.Api.search(keyWords))
-						.then(res => {
-							console.log(res);
-						})
-						.catch(err => {
-							console.log(err);
-						})
 				} else {
 					this.showDefault = true;
+					this.showResults = false;
 				}
+			},
+			showResult(keyWords) {
+				this.isLoading = true;
+				this.showDefault = false;
+				this.showResults = false;
+				this.$http.get(this.Api.search(keyWords))
+					.then(res => {
+						// console.log(res.data);
+						if(res.data.code === 200) {
+							this.songsList = res.data.result.songs;
+							// console.log(this.songsList);
+							this.songsList.forEach((item, index) => {
+								let singers = [];
+								for(let i = 0; i < item.ar.length; i++) {
+									singers.push(item.ar[i].name);
+								}
+								for(let j = 0; j < singers.length - 1; j++) {
+									if(singers.length > 1) {
+										singers[j] += ' /';
+										singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+									}
+								}
+								item.singer = singers.join('');
+								this.isLoading = false;
+								this.showList = true;
+							});
+						}
+					})
+					.catch(err => {
+						console.log(err);
+					});
+				if(this.hisList.length === 0) {
+					this.hisList.push(this.keyWords);
+				} else {
+					this.hisList.forEach((item, index) => {
+						// 如果历史记录中已有该元素，则先删除，再添加
+						if(this.hisList.indexOf(this.keyWords) > -1) {
+							this.hisList.splice(this.hisList.indexOf(this.keyWords), 1);
+						}
+						this.hisList.push(this.keyWords);
+					})
+				}
+				window.localStorage.setItem('search_history', JSON.stringify(this.hisList));
 			},
 			delKeyWords() {
 				this.keyWords = '';
 				this.showDefault = true;
+				this.showResults = false;
+				this.showList = false;
+			},
+			delHistory(index) {
+				this.hisList.splice(index, 1);
+				window.localStorage.setItem('search_history', JSON.stringify(this.hisList));
 			}
 		}
 	});
@@ -112,6 +180,15 @@
 
 <style lang="less" scoped>
 	.tab-search {
+		position: relative;
+		.icon {
+			background: url(../assets/images/index_icon.png) no-repeat;
+			background-size: 166px 97px;
+		}
+		.loading-img {
+			top: 60px;
+
+		}
 		.svg-icon {
 			display: inline-block;
 			vertical-align: middle;
@@ -128,7 +205,6 @@
 			padding: 15px 10px;
 			&::after {
 				border-bottom-width: 1px;
-				border-color: rgba(0, 0, 0, .1);
 			}
 			.inputcover {
 				position: relative;
@@ -231,7 +307,6 @@
 					color: #333;
 					&::after {
 						border-bottom-width: 1px;
-						border-color: rgba(0, 0, 0, .1);
 					}
 					.his-txt {
 						flex: 1;;
@@ -262,7 +337,6 @@
 				color: #507daf;
 				&::after {
 					border-bottom-width: 1px;
-					border-color: rgba(0, 0, 0, .1);
 				}
 			}
 			.item {
@@ -286,6 +360,71 @@
 					&::after {
 						border-bottom-width: 1px;
 						border-color: rgba(0, 0, 0, .1)
+					}
+				}
+			}
+		}
+		.m-song-list {
+			padding-top: 8px;
+			.song-item {
+				display: block;
+				padding-left: 10px;
+				color: #333;
+				.item-wrap {
+					display: flex;
+					width: 100%;
+					align-items: center;
+					height: 60px;
+					padding: 5px 10px 5px 0;
+					box-sizing: border-box;
+					&::after {
+						border-bottom-width: 1px;
+					}
+					.item-img {
+						display: flex;
+						align-items: center;
+						width: 50px;
+						height: 50px;
+						margin-right: 10px;
+						img {
+							width: 100%;
+						}
+					}
+					.item-info {
+						flex: 1;
+						width: 0%;
+						.song-info {
+							width: 100%;
+							white-space: nowrap;
+							overflow: hidden;
+							text-overflow: ellipsis;
+						}
+						.song-name {
+							font-size: 17px;
+						}
+						.song-singer {
+							position: relative;
+							color: #888;
+							.icon-hot {
+								position: absolute;
+								left: 0;
+								top: 5px;
+								display: inline-block;
+								width: 12px;
+								height: 8px;
+							}
+						}
+					}
+					.item-icon {
+						display: flex;
+						align-items: center;
+						padding: 0 10px;
+						.icon-play {
+							display: block;
+							width: 22px;
+							height: 22px;
+							background-position: -24px 0;
+						}
 					}
 				}
 			}
