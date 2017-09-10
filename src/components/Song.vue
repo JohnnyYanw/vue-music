@@ -66,25 +66,40 @@
 					.then(res => {
 						if(res.data.code === 200) {
 							if(!res.data.nolyric && !res.data.uncollected) {
-								console.log(res.data);
 								let lrcInfoList = res.data.lrc.lyric.split('\n');
+								console.log(lrcInfoList);
+								let lrcObj = {};
 								lrcInfoList.forEach(function(item, index) {
-									// console.log(item);
-									let reg = /\]/i;
-									if(reg.test(item)) {
-										let lrcArr = item.split(reg);
-										lrcArr[0] += ']';
-										for(let i = 0; i < lrcArr.length; i++) {
-											lrcArr[i] = lrcArr[i].replace(/(^\s*)|(\s*$)/g, '');
-										}
-										// console.log(lrcArr);
-										that.lrcList.push(lrcArr);
-										if(that.lrcList[0][1] === '') {
-											that.lrcList.splice(0, 1);
-										}
-									}
+									// let reg = /\]/i;
+									// if(reg.test(item)) {
+									// 	let lrcArr = item.split(reg);
+									// 	for(let i = 0; i < lrcArr.length; i++) {
+									// 		lrcArr[i] = lrcArr[i].replace(/(^(\s|\[)*)|((\s|\[)*$)/g, '');
+									// 	}
+									// 	// console.log(lrcArr);
+									// 	that.lrcList.push(lrcArr);
+									// 	if(that.lrcList[0][1] === '') {
+									// 		that.lrcList.splice(0, 1);
+									// 	}
+									// }
+									// 匹配时间的正则 => /\[\d*:\d*((\.|\:)\d*)*\]/g
+									let timeReg = /\[\d*\:\d*((\.|\:)\d*)*\]/g;
+									// 获取歌词时间
+									let timeRegArr = item.match(timeReg);
+									// 获取歌词文本
+									let lrcTxt = item.replace(timeReg, '');
+									console.log(lrcTxt);
+									// 将时间格式化为秒
+									for(let i = 0, len = timeRegArr.length; i< len; i++) {
+										let timeObj = timeRegArr[i];
+										// console.log(timeObj);
+										let minutes = Number(timeObj.split(':')[0]);
+										let seconds = Number(timeRegArr[i].split(':')[1]);
+										let oTime = minutes * 60 + seconds;
+										// console.log(oTime);
+									};
 								});
-								console.log(that.lrcList);
+								console.log(lrcInfoList);
 							} else if(res.data.nolyric) {
 								this.nolrc = true;
 							} else {
@@ -134,7 +149,7 @@
 				this.isPaused = true;
 			},
 			lrcScroll(sTime, eTime) {
-
+				// 
 			}
 		}
 	});
