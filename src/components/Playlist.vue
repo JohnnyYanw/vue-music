@@ -30,7 +30,7 @@
 		<div class="play-list">
 			<h3 class="list-title">歌曲列表</h3>
 			<div class="list-songs">
-				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
+				<div class="song-item" v-for="(item, index) in songsList" @click="saveSession(item)" :key="index">
 					<div class="item-fl">{{index + 1}}</div>
 					<div class="item-fr t-bd">
 						<div class="item-left">
@@ -41,13 +41,15 @@
 							<i class="icon icon-play"></i>
 						</div>
 					</div>
-				</router-link>
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+	import {mapActions} from 'vuex';
+
 	export default({
 		name: 'playlist',
 		data() {
@@ -99,7 +101,17 @@
 				});
 		},
 		methods: {
-			
+			// sessionStorage存储相应歌曲的信息
+			saveSession(item) {
+				let songInfo = {
+					"resId": item.id,
+					"songName": item.name,
+					"picUrl": item.al.picUrl,
+					"singer": item.singer
+				};
+				window.sessionStorage.setItem("song_info", JSON.stringify(songInfo));
+				this.$router.push({path: 'song', query: {id: item.id}});
+			}
 		}
 	});
 </script>

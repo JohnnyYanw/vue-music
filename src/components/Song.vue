@@ -1,20 +1,30 @@
 <template>
 	<div class="m-song">
 		<a @click="$router.go(-1)" class="prev"></a>
-		<div class="m-song-bg" :style="'background-image: url(' + bgImg + '); opacity: 1;'"></div>
+		<div class="m-song-bg" :style="'background-image: url(' + songInfo.picUrl + '); opacity: 1;'"></div>
 		<div class="m-song-container">
 			<div class="m-song-wrap">
 				<div class="m-song-disc" :class="{'m-song-stop': isStop, 'm-song-pause': isPaused}">
 					<div class="m-song-turn" @click="pauseSong">
 						<div class="m-song-img">
-							<img :src="bgImg">
+							<img :src="songInfo.picUrl">
 						</div>
 					</div>
 					<span class="m-song-plybtn" v-if="isStop" @click="playSong"></span>
 					<span class="m-song-plybtn" v-else-if="isPaused" @click="playSong"></span>
 				</div>
 			</div>
-			<div class="m-song-info"></div>
+			<div class="m-song-info">
+				<h2 class="title">
+					<span class="song-name">{{songInfo.songName}}</span><i>-</i><b class="singer-name">{{songInfo.singer}}</b></h2>
+				<div class="lrc-wrap">
+					<ul class="lrc-ul" v-if="lrcList.length > 0">
+						<li class="lrc" v-for="(item, index) in lrcList">{{item[1]}}</li>
+					</ul>
+					<div class="no-lrc" v-else-if="nolrc">纯音乐，无歌词</div>
+					<div class="no-lrc" v-else-if="uncollected">暂无歌词</div>
+				</div>
+			</div>
 		</div>
 		<div class="audio-box">
 			<audio id="myaudio" :src="audiourl" @ended="isStop = true"></audio>
@@ -27,15 +37,18 @@
 		name: 'song',
 		data() {
 			return {
-				bgImg: '',
+				songInfo: {},
 				audiourl: '',
-				lrcTxt: '',
+				lrcList: [],
+				nolrc: false,
+				uncollected: false,
 				isStop: false,
 				isPaused: false
 			}
 		},
 		created() {
 			this.$nextTick(() => {
+				this.songInfo = JSON.parse(window.sessionStorage.getItem('song_info'));
 				this.getLrc();
 				this.getSong();
 			});
@@ -47,10 +60,37 @@
 		},
 		methods: {
 			getLrc() {
+				let that = this;
 				let songId = this.$route.query.id;
-				this.$http.get(this.Api.getLrc(songId))
+				that.$http.get(this.Api.getLrc(songId))
 					.then(res => {
-						// console.log(res.data);
+						if(res.data.code === 200) {
+							if(!res.data.nolyric && !res.data.uncollected) {
+								console.log(res.data);
+								let lrcInfoList = res.data.lrc.lyric.split('\n');
+								lrcInfoList.forEach(function(item, index) {
+									// console.log(item);
+									let reg = /\]/i;
+									if(reg.test(item)) {
+										let lrcArr = item.split(reg);
+										lrcArr[0] += ']';
+										for(let i = 0; i < lrcArr.length; i++) {
+											lrcArr[i] = lrcArr[i].replace(/(^\s*)|(\s*$)/g, '');
+										}
+										// console.log(lrcArr);
+										that.lrcList.push(lrcArr);
+										if(that.lrcList[0][1] === '') {
+											that.lrcList.splice(0, 1);
+										}
+									}
+								});
+								console.log(that.lrcList);
+							} else if(res.data.nolyric) {
+								this.nolrc = true;
+							} else {
+								this.uncollected = true;
+							}
+						}
 					})
 					.catch(err => {
 						console.log(err);
@@ -58,7 +98,7 @@
 			},
 			getSong() {
 				// console.log(this.$route);
-				this.bgImg = this.$route.query.imgUrl;
+				// this.bgImg = this.$route.query.imgUrl;
 				let songId = this.$route.query.id;
 				this.$http.get(this.Api.getSong(songId))
 					.then(res => {
@@ -92,6 +132,9 @@
 			pauseSong() {
 				document.getElementById('myaudio').pause();
 				this.isPaused = true;
+			},
+			lrcScroll(sTime, eTime) {
+
 			}
 		}
 	});
@@ -231,6 +274,44 @@
 				}
 			}
 		}
+		.m-song-info {
+			position: relative;
+			padding: 0 30px;
+			margin-top: 25px;
+			text-align: center;
+			color: #FFF;
+			z-index: 9;
+			.title {
+				line-height: 1.1;
+				font-size: 15px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				i {
+					margin: 0 4px;
+				}
+				.singer-name {
+					font-size: 13px;
+					color: #ddd;
+				}
+			}
+			.lrc-wrap {
+				position: relative;
+				height: 67px;
+				margin-top: 15px;
+				font-size: 13px;
+				color: #ddd;
+				overflow: hidden;
+				.lrc-ul {
+					width: 100%;
+					transition: transform .3s ease-out;
+					.lrc {
+						padding-bottom: 5px;
+					}
+				}
+			}
+
+		}
 		@media screen and (min-width: 360px) {
 			.m-song-wrap {
 				padding-top: 70px;
@@ -262,6 +343,21 @@
 				.m-song-plybtn {
 					width: 56px;
 					height: 56px;
+				}
+			}
+			.m-song-info {
+				.title {
+					font-size: 18px;
+					.singer-name {
+						font-size: 16px;
+					}
+				}
+				.lrc-wrap {
+					height: 88px;
+					font-size: 16px;
+					.lrc-ul .lrc {
+						padding-bottom: 8px;
+					}
 				}
 			}
 		}

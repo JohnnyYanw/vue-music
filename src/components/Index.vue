@@ -19,7 +19,7 @@
 			<h2 class="item-title">最新音乐</h2>
 			<div class="new-songs">
 				<div class="loading-img" v-if="loading"></div>
-				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
+				<div class="song-item" v-for="(item, index) in songsList" @click="saveSession(item)" :key="index">
 					<div class="item-bd">
 						<div class="item-left">
 							<div class="song-info song-name">{{item.name}}</div>
@@ -31,7 +31,7 @@
 							<i class="icon icon-play"></i>
 						</div>
 					</div>
-				</router-link>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -100,7 +100,17 @@
 			
 		},
 		methods: {
-			
+			// sessionStorage存储相应歌曲的信息
+			saveSession(item) {
+				let songInfo = {
+					"resId": item.id,
+					"songName": item.name,
+					"picUrl": item.al.picUrl,
+					"singer": item.singer
+				};
+				window.sessionStorage.setItem("song_info", JSON.stringify(songInfo));
+				this.$router.push({path: 'song', query: {id: item.id}});
+			}
 		}
 	}
 </script>
