@@ -10,19 +10,18 @@
 							<img :src="songInfo.picUrl">
 						</div>
 					</div>
-					<span class="m-song-plybtn" v-if="isStop" @click="playSong"></span>
-					<span class="m-song-plybtn" v-else-if="isPaused" @click="playSong"></span>
+					<span class="m-song-plybtn" v-show="showBtn" @click="playSong"></span>
 				</div>
 			</div>
 			<div class="m-song-info">
 				<h2 class="title">
 					<span class="song-name">{{songInfo.songName}}</span><i>-</i><b class="singer-name">{{songInfo.singer}}</b></h2>
 				<div class="lrc-wrap">
-					<ul class="lrc-ul" v-if="lrcList.length > 0">
-						<li class="lrc" v-for="(item, index) in lrcList">{{item[1]}}</li>
+					<ul class="lrc-ul" :class="{active: isPlaying}" v-if="lrcList.length > 0" :style="'transform: translateY(' + lrcOffset + 'px)'">
+						<li class="lrc" v-for="(item, index) in lrcList" :key="index">{{item.lrc}}</li>
 					</ul>
 					<div class="no-lrc" v-else-if="nolrc">纯音乐，无歌词</div>
-					<div class="no-lrc" v-else-if="uncollected">暂无歌词</div>
+					<div class="no-lrc" v-else>暂无歌词</div>
 				</div>
 			</div>
 		</div>
@@ -39,11 +38,16 @@
 			return {
 				songInfo: {},
 				audiourl: '',
+				// 歌词以数组形式存在,格式=>[{time: time, lrc: lrc}, ...]
 				lrcList: [],
 				nolrc: false,
 				uncollected: false,
 				isStop: false,
-				isPaused: false
+				isPaused: false,
+				currTime: 0,
+				lrcIndex: 0,
+				lrcOffset: 0,
+				width: document.documentElement.clientWidth
 			}
 		},
 		created() {
@@ -53,12 +57,54 @@
 				this.getSong();
 			});
 		},
+		mounted() {
+			this.$nextTick(() => {
+				if(document.getElementById('myaudio')) {
+					document.getElementById('myaudio').addEventListener('timeupdate', () => {
+						this.currTime = document.getElementById('myaudio').currentTime;
+					})
+				}
+			});
+		},
+		computed: {
+			showBtn() {
+				return this.isStop || this.isPaused;
+			},
+			isPlaying() {
+				return this.isStop === false && this.isPaused === false;
+			}
+		},
 		watch: {
-			'$route'(to, from) {
-				this.getSong();
+			currTime() {
+				if(this.lrcList) {
+					let time = Math.round(this.currTime);
+					let i = 0;
+					for(let len = this.lrcList.length; i < len; i++) {
+						if(this.lrcList[i].time === time) {
+							this.lrcIndex = i;
+							if(this.isStop) {
+								this.lrcIndex = 0;
+							}
+							if(this.width < 360) {
+								this.lrcOffset = -(this.lrcIndex) * 24;
+							} else {
+								this.lrcOffset = -(this.lrcIndex) * 32;
+							}
+							// console.log(this.lrcOffset);
+						}
+					}
+				}
 			}
 		},
 		methods: {
+			// 根据时间对数组对象(歌词)排序
+			sortLrc(prop) {
+				return function(obj1, obj2) {
+					let val1 = obj1[prop];
+					let val2 = obj2[prop];
+					return val1 - val2;
+				};
+			},
 			getLrc() {
 				let that = this;
 				let songId = this.$route.query.id;
@@ -67,39 +113,50 @@
 						if(res.data.code === 200) {
 							if(!res.data.nolyric && !res.data.uncollected) {
 								let lrcInfoList = res.data.lrc.lyric.split('\n');
-								console.log(lrcInfoList);
-								let lrcObj = {};
+								// console.log(lrcInfoList);
+								// 匹配时间的正则 => /\[\d*:\d*((\.|\:)\d*)*\]/g
+								let timeReg = /\[\d*\:\d*((\.|\:)\d*)*\]/g;
+								let filterLrcList = [];
 								lrcInfoList.forEach(function(item, index) {
-									// let reg = /\]/i;
-									// if(reg.test(item)) {
-									// 	let lrcArr = item.split(reg);
-									// 	for(let i = 0; i < lrcArr.length; i++) {
-									// 		lrcArr[i] = lrcArr[i].replace(/(^(\s|\[)*)|((\s|\[)*$)/g, '');
-									// 	}
-									// 	// console.log(lrcArr);
-									// 	that.lrcList.push(lrcArr);
-									// 	if(that.lrcList[0][1] === '') {
-									// 		that.lrcList.splice(0, 1);
-									// 	}
-									// }
-									// 匹配时间的正则 => /\[\d*:\d*((\.|\:)\d*)*\]/g
-									let timeReg = /\[\d*\:\d*((\.|\:)\d*)*\]/g;
 									// 获取歌词时间
 									let timeRegArr = item.match(timeReg);
-									// 获取歌词文本
-									let lrcTxt = item.replace(timeReg, '');
-									console.log(lrcTxt);
+									// 如果有不匹配的元素，从数组中删除
+									if(!timeRegArr) {
+										lrcInfoList.splice(index, 1);
+									}
+								});
+								// 将筛选后的数组赋值给新数组
+								filterLrcList = lrcInfoList;
+								// console.log(filterLrcList);
+								filterLrcList.forEach(function(item, index) {
+									// 获取歌词时间
+									let timeRegArr = item.match(timeReg);
+									// 获取歌词文本并去除两端空格
+									let lrcTxt = item.replace(timeReg, '').replace(/^\s*|\s*$/g, '');
+									// console.log(lrcTxt);
 									// 将时间格式化为秒
-									for(let i = 0, len = timeRegArr.length; i< len; i++) {
+									for(let i = 0, len = timeRegArr.length; i < len; i++) {
+										let lrcObj = {};
 										let timeObj = timeRegArr[i];
-										// console.log(timeObj);
-										let minutes = Number(timeObj.split(':')[0]);
-										let seconds = Number(timeRegArr[i].split(':')[1]);
-										let oTime = minutes * 60 + seconds;
-										// console.log(oTime);
+										/*
+										 * timeObj是String类型,要进行处理
+										 * 首先获取歌曲分钟数,然后用同样方法获取秒数,计算得到歌曲时长(s)
+										 */
+										let minutes = Number(String(timeObj.match(/\[\d*/i)).slice(1));
+										let seconds = Number(String(timeObj.match(/\:\d*/i)).slice(1));
+										let time = minutes * 60 + seconds;
+										// console.log(time);
+										// 以 time: lrcTxt 的格式存入 lrcObj 中
+										// that.lrcObj[time] = lrcTxt;
+										lrcObj.time = time;
+										lrcObj.lrc = lrcTxt;
+										that.lrcList.push(lrcObj);
 									};
 								});
-								console.log(lrcInfoList);
+								// console.log(that.lrcList);
+								// 调用 sortLrc 对数组对象排序
+								that.lrcList.sort(that.sortLrc('time'));
+								// console.log(that.lrcList);
 							} else if(res.data.nolyric) {
 								this.nolrc = true;
 							} else {
@@ -147,9 +204,6 @@
 			pauseSong() {
 				document.getElementById('myaudio').pause();
 				this.isPaused = true;
-			},
-			lrcScroll(sTime, eTime) {
-				// 
 			}
 		}
 	});
@@ -321,6 +375,7 @@
 					width: 100%;
 					transition: transform .3s ease-out;
 					.lrc {
+						height: 19px;
 						padding-bottom: 5px;
 					}
 				}
@@ -371,6 +426,7 @@
 					height: 88px;
 					font-size: 16px;
 					.lrc-ul .lrc {
+						height: 24px;
 						padding-bottom: 8px;
 					}
 				}

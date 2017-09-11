@@ -42,62 +42,18 @@
 		name: 'index',
 		data() {
 			return {
-				isLoading: true,
-				loading: true,
+				isLoading: false,
+				loading: false,
 				remdList: [],
 				songsList: []
 			}
 		},
 		beforeCreate() {
-			this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 3, true, 9))
-				.then(res => {
-					// console.log(res);
-					if(res.status === 200) {
-						let dataList = res.data.playlists;
-						for(let i = 0; i < dataList.length; i += 3) {
-							this.remdList.push(dataList.slice(i, i + 3));
-						}
-						// console.log(this.remdList);
-						this.isLoading = false;
-					}
-				})
-				.catch(err => {
-					console.log(err);
-					this.isLoading = false;
-				});
-			this.$http.get(this.Api.getPlayListDetail(900009693))
-				.then(res => {
-					// console.log(res);
-					if(res.data.code === 200) {
-						this.songsList = res.data.playlist.tracks;
-						this.songsList.forEach((item, index) => {
-							let singers = [];
-							for(let i = 0; i < item.ar.length; i++) {
-								singers.push(item.ar[i].name);
-							}
-							for(let j = 0; j < singers.length - 1; j++) {
-								if(singers.length > 1) {
-									singers[j] += ' /';
-									singers[singers.length - 1] = ' ' + singers[singers.length - 1];
-								}
-							}
-							item.singer = singers.join('');
-						});
-						this.loading = false;
-					}
-				})
-				.catch(err => {
-					console.log(err);
-					this.loading = false;
-				});
+
 		},
-		filters: {
-			formatCount(val, type) {
-				return (val / 10000).toFixed(1) + type;
-			}
-		},
-		mounted() {
-			
+		created() {
+			this.get();
+			this.getSongsList();
 		},
 		methods: {
 			// sessionStorage存储相应歌曲的信息
@@ -110,6 +66,58 @@
 				};
 				window.sessionStorage.setItem("song_info", JSON.stringify(songInfo));
 				this.$router.push({path: 'song', query: {id: item.id}});
+			},
+			get() {
+				this.isLoading = true;
+				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 3, true, 9))
+					.then(res => {
+						// console.log(res);
+						if(res.status === 200) {
+							let dataList = res.data.playlists;
+							for(let i = 0; i < dataList.length; i += 3) {
+								this.remdList.push(dataList.slice(i, i + 3));
+							}
+							// console.log(this.remdList);
+							this.isLoading = false;
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						this.isLoading = false;
+					});
+			},
+			getSongsList() {
+				this.loading = true;
+				this.$http.get(this.Api.getPlayListDetail(900009693))
+					.then(res => {
+						// console.log(res);
+						if(res.data.code === 200) {
+							this.songsList = res.data.playlist.tracks;
+							this.songsList.forEach((item, index) => {
+								let singers = [];
+								for(let i = 0; i < item.ar.length; i++) {
+									singers.push(item.ar[i].name);
+								}
+								for(let j = 0; j < singers.length - 1; j++) {
+									if(singers.length > 1) {
+										singers[j] += ' /';
+										singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+									}
+								}
+								item.singer = singers.join('');
+							});
+							this.loading = false;
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						this.loading = false;
+					});
+			}
+		},
+		filters: {
+			formatCount(val, type) {
+				return (val / 10000).toFixed(1) + type;
 			}
 		}
 	}

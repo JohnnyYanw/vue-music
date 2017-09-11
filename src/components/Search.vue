@@ -47,7 +47,7 @@
 		<div class="loading-img" v-if="isLoading"></div>
 		<div class="m-search-result" v-if="showList">
 			<section class="m-song-list">
-				<router-link class="song-item" v-for="(item, index) in songsList" :to="{name: 'song', query: {id: item.id, imgUrl: item.al.picUrl}, params: {}}" :key="index">
+				<div class="song-item" v-for="(item, index) in songsList" @click="saveSession(item)" :key="index">
 					<div class="item-wrap t-bd">
 						<div class="item-img">
 							<img :src="item.al.picUrl">
@@ -60,7 +60,7 @@
 							<i class="icon icon-play"></i>
 						</div>
 					</div>
-				</router-link>
+				</div>
 			</section>
 		</div>
 	</div>
@@ -84,7 +84,11 @@
 		mounted() {
 			this.$nextTick(() => {
 				this.getHotList();
-				this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
+				if(!!window.localStorage.getItem('search_history')) {
+					this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
+				} else {
+					this.hisList = [];
+				}
 				// console.log(this.hisList);
 			})
 		},
@@ -174,6 +178,17 @@
 			delHistory(index) {
 				this.hisList.splice(index, 1);
 				window.localStorage.setItem('search_history', JSON.stringify(this.hisList));
+			},
+			// sessionStorage存储相应歌曲的信息
+			saveSession(item) {
+				let songInfo = {
+					"resId": item.id,
+					"songName": item.name,
+					"picUrl": item.al.picUrl,
+					"singer": item.singer
+				};
+				window.sessionStorage.setItem("song_info", JSON.stringify(songInfo));
+				this.$router.push({path: 'song', query: {id: item.id}});
 			}
 		}
 	});
