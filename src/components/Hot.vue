@@ -1,6 +1,10 @@
 <template>
 	<div class="tab-hot">
-		github: <a href="https://github.com/JohnnyYanw">点击查看</a>
+		<div class="hot-wrap">
+			待完善！！！敬请期待！！！
+			<hr>
+			github: <a href="https://github.com/JohnnyYanw">点击查看</a>
+		</div>
 	</div>
 </template>
 
@@ -14,8 +18,11 @@
 	.tab-hot {
 		padding-top: 15px;
 		font-size: 18px;
-		a {
-			text-decoration: underline;
+		.hot-wrap {
+			padding: 20px 10px;
+			a {
+				text-decoration: underline;
+			}
 		}
 	}
 </style>

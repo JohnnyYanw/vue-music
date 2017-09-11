@@ -59,11 +59,9 @@
 		},
 		mounted() {
 			this.$nextTick(() => {
-				if(document.getElementById('myaudio')) {
-					document.getElementById('myaudio').addEventListener('timeupdate', () => {
-						this.currTime = document.getElementById('myaudio').currentTime;
-					})
-				}
+				document.getElementById('myaudio').addEventListener('timeupdate', () => {
+					this.currTime = document.getElementById('myaudio').currentTime;
+				})
 			});
 		},
 		computed: {
@@ -78,17 +76,14 @@
 			currTime() {
 				if(this.lrcList) {
 					let time = Math.round(this.currTime);
-					let i = 0;
+					let i = 1;
 					for(let len = this.lrcList.length; i < len; i++) {
 						if(this.lrcList[i].time === time) {
-							this.lrcIndex = i;
-							if(this.isStop) {
-								this.lrcIndex = 0;
-							}
+							this.lrcIndex = i - 1;
 							if(this.width < 360) {
-								this.lrcOffset = -(this.lrcIndex) * 24;
+								this.lrcOffset = -(this.lrcIndex) * 23;
 							} else {
-								this.lrcOffset = -(this.lrcIndex) * 32;
+								this.lrcOffset = -(this.lrcIndex) * 30;
 							}
 							// console.log(this.lrcOffset);
 						}
@@ -97,37 +92,32 @@
 			}
 		},
 		methods: {
-			// 根据时间对数组对象(歌词)排序
-			sortLrc(prop) {
-				return function(obj1, obj2) {
-					let val1 = obj1[prop];
-					let val2 = obj2[prop];
-					return val1 - val2;
-				};
-			},
 			getLrc() {
 				let that = this;
 				let songId = this.$route.query.id;
 				that.$http.get(this.Api.getLrc(songId))
 					.then(res => {
 						if(res.data.code === 200) {
+							// 当获取到歌词后，进行格式化
 							if(!res.data.nolyric && !res.data.uncollected) {
 								let lrcInfoList = res.data.lrc.lyric.split('\n');
 								// console.log(lrcInfoList);
 								// 匹配时间的正则 => /\[\d*:\d*((\.|\:)\d*)*\]/g
 								let timeReg = /\[\d*\:\d*((\.|\:)\d*)*\]/g;
 								let filterLrcList = [];
+								// 对歌词数据进行筛选
 								lrcInfoList.forEach(function(item, index) {
 									// 获取歌词时间
 									let timeRegArr = item.match(timeReg);
+									// 获取歌词
+									let lrcTxt = item.replace(timeReg, '').replace(/^\s*|\s*$/g, '');
 									// 如果有不匹配的元素，从数组中删除
-									if(!timeRegArr) {
+									if(!timeRegArr || lrcTxt === '') {
 										lrcInfoList.splice(index, 1);
 									}
 								});
 								// 将筛选后的数组赋值给新数组
 								filterLrcList = lrcInfoList;
-								// console.log(filterLrcList);
 								filterLrcList.forEach(function(item, index) {
 									// 获取歌词时间
 									let timeRegArr = item.match(timeReg);
@@ -153,7 +143,6 @@
 										that.lrcList.push(lrcObj);
 									};
 								});
-								// console.log(that.lrcList);
 								// 调用 sortLrc 对数组对象排序
 								that.lrcList.sort(that.sortLrc('time'));
 								// console.log(that.lrcList);
@@ -204,6 +193,14 @@
 			pauseSong() {
 				document.getElementById('myaudio').pause();
 				this.isPaused = true;
+			},
+			// 根据时间对数组对象(歌词)排序
+			sortLrc(prop) {
+				return function(obj1, obj2) {
+					let val1 = obj1[prop];
+					let val2 = obj2[prop];
+					return val1 - val2;
+				};
 			}
 		}
 	});
@@ -366,7 +363,7 @@
 			}
 			.lrc-wrap {
 				position: relative;
-				height: 67px;
+				height: 69px;
 				margin-top: 15px;
 				font-size: 13px;
 				color: #ddd;
@@ -375,8 +372,10 @@
 					width: 100%;
 					transition: transform .3s ease-out;
 					.lrc {
-						height: 19px;
-						padding-bottom: 5px;
+						line-height: 23px;
+					}
+					.active {
+						color: #FFF;
 					}
 				}
 			}
@@ -423,11 +422,10 @@
 					}
 				}
 				.lrc-wrap {
-					height: 88px;
+					height: 90px;
 					font-size: 16px;
 					.lrc-ul .lrc {
-						height: 24px;
-						padding-bottom: 8px;
+						line-height: 30px;
 					}
 				}
 			}
