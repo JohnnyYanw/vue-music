@@ -109,39 +109,25 @@
 								lrcInfoList.forEach(function(item, index) {
 									// 获取歌词时间
 									let timeRegArr = item.match(timeReg);
-									// 获取歌词
+									// 获取歌词并去除两端空格
 									let lrcTxt = item.replace(timeReg, '').replace(/^\s*|\s*$/g, '');
-									// 如果有不匹配的元素，从数组中删除
-									if(!timeRegArr || lrcTxt === '') {
-										lrcInfoList.splice(index, 1);
+									// 对满足条件的数据进行处理
+									if(timeRegArr && lrcTxt !== '') {
+										// 对时间进行格式化
+										timeRegArr.forEach((t, i) => {
+											// 将歌词以 [{time: time, lrc: lrcTxt}, ...] 的格式保存
+											let lrcObj = {};
+											// 获取分钟
+											let minutes = Number(String(t.match(/\[\d*/i)).slice(1));
+											// 获取秒
+											let seconds = Number(String(t.match(/\:\d*/i)).slice(1));
+											// 计算歌曲时长
+											let time = minutes * 60 + seconds;
+											lrcObj.time = time;
+											lrcObj.lrc = lrcTxt;
+											that.lrcList.push(lrcObj);
+										});
 									}
-								});
-								// 将筛选后的数组赋值给新数组
-								filterLrcList = lrcInfoList;
-								filterLrcList.forEach(function(item, index) {
-									// 获取歌词时间
-									let timeRegArr = item.match(timeReg);
-									// 获取歌词文本并去除两端空格
-									let lrcTxt = item.replace(timeReg, '').replace(/^\s*|\s*$/g, '');
-									// console.log(lrcTxt);
-									// 将时间格式化为秒
-									for(let i = 0, len = timeRegArr.length; i < len; i++) {
-										let lrcObj = {};
-										let timeObj = timeRegArr[i];
-										/*
-										 * timeObj是String类型,要进行处理
-										 * 首先获取歌曲分钟数,然后用同样方法获取秒数,计算得到歌曲时长(s)
-										 */
-										let minutes = Number(String(timeObj.match(/\[\d*/i)).slice(1));
-										let seconds = Number(String(timeObj.match(/\:\d*/i)).slice(1));
-										let time = minutes * 60 + seconds;
-										// console.log(time);
-										// 以 time: lrcTxt 的格式存入 lrcObj 中
-										// that.lrcObj[time] = lrcTxt;
-										lrcObj.time = time;
-										lrcObj.lrc = lrcTxt;
-										that.lrcList.push(lrcObj);
-									};
 								});
 								// 调用 sortLrc 对数组对象排序
 								that.lrcList.sort(that.sortLrc('time'));

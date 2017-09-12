@@ -3,7 +3,7 @@
 		<div class="hot-wrap">
 			待完善！！！敬请期待！！！
 			<hr>
-			github: <a href="https://github.com/JohnnyYanw">点击查看</a>
+			github: <a href="https://github.com/JohnnyYanw/vue-music">点击查看</a>
 		</div>
 	</div>
 </template>
