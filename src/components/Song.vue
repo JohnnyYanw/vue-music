@@ -26,7 +26,7 @@
 			</div>
 		</div>
 		<div class="audio-box">
-			<audio id="myaudio" :src="audiourl" @ended="isStop = true"></audio>
+			<audio id="myaudio" ref="audio" :src="audiourl" @ended="isStop = true"></audio>
 		</div>
 	</div>
 </template>
@@ -46,8 +46,7 @@
 				isPaused: false,
 				currTime: 0,
 				lrcIndex: 0,
-				lrcOffset: 0,
-				width: document.documentElement.clientWidth
+				lrcOffset: 0
 			}
 		},
 		created() {
@@ -61,7 +60,10 @@
 			this.$nextTick(() => {
 				document.getElementById('myaudio').addEventListener('timeupdate', () => {
 					this.currTime = document.getElementById('myaudio').currentTime;
-				})
+				});
+				document.getElementById('myaudio').addEventListener('ended', () => {
+					this.lrcOffset = 0;
+				});
 			});
 		},
 		computed: {
