@@ -36,12 +36,6 @@
 		<div class="m-list" v-if="showResults">
 			<section class="list-wrap">
 				<h3 class="title t-bd" @click="showResult(keyWords)">搜索“{{keyWords}}”</h3>
-				<!-- <ul>
-					<li class="item">
-						<i class="svg-icon search-svg"></i>
-						<span class="t-bd t-hide">薛之谦</span>
-					</li>
-				</ul> -->
 			</section>
 		</div>
 		<div class="loading-img" v-if="isLoading"></div>
@@ -88,7 +82,6 @@
 			} else {
 				this.hisList = [];
 			}
-			// console.log(this.hisList);
 		},
 		computed: {
 			showHolder: {

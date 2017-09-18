@@ -86,7 +86,6 @@
 							} else {
 								this.lrcOffset = -(this.lrcIndex) * 30;
 							}
-							// console.log(this.lrcOffset);
 						}
 					}
 				}
