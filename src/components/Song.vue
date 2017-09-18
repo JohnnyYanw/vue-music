@@ -58,11 +58,13 @@
 		},
 		mounted() {
 			this.$nextTick(() => {
-				document.getElementById('myaudio').addEventListener('timeupdate', () => {
-					this.currTime = document.getElementById('myaudio').currentTime;
+				let that = this;
+				let audio = document.getElementById('myaudio');
+				audio.addEventListener('timeupdate', function() {
+					that.currTime = this.currentTime;
 				});
-				document.getElementById('myaudio').addEventListener('ended', () => {
-					this.lrcOffset = 0;
+				audio.addEventListener('ended', function() {
+					that.lrcOffset = 0;
 				});
 			});
 		},
