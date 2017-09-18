@@ -82,15 +82,13 @@
 			}
 		},
 		mounted() {
-			this.$nextTick(() => {
-				this.getHotList();
-				if(!!window.localStorage.getItem('search_history')) {
-					this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
-				} else {
-					this.hisList = [];
-				}
-				// console.log(this.hisList);
-			})
+			this.getHotList();
+			if(!!window.localStorage.getItem('search_history')) {
+				this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
+			} else {
+				this.hisList = [];
+			}
+			// console.log(this.hisList);
 		},
 		computed: {
 			showHolder: {

@@ -50,22 +50,19 @@
 			}
 		},
 		created() {
-			this.$nextTick(() => {
-				this.songInfo = JSON.parse(window.sessionStorage.getItem('song_info'));
-				this.getLrc();
-				this.getSong();
-			});
+			this.songInfo = JSON.parse(window.sessionStorage.getItem('song_info'));
+			this.getLrc();
+			this.getSong();
 		},
 		mounted() {
-			this.$nextTick(() => {
-				let that = this;
-				let audio = document.getElementById('myaudio');
-				audio.addEventListener('timeupdate', function() {
-					that.currTime = this.currentTime;
-				});
-				audio.addEventListener('ended', function() {
-					that.lrcOffset = 0;
-				});
+			// 生命周期中，尽量避免使用箭头函数
+			let that = this;
+			let audio = document.getElementById('myaudio');
+			audio.addEventListener('timeupdate', function() {
+				that.currTime = this.currentTime;
+			});
+			audio.addEventListener('ended', function() {
+				that.lrcOffset = 0;
 			});
 		},
 		computed: {
