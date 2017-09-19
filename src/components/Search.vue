@@ -95,7 +95,7 @@
 		},
 		methods: {
 			getHotList() {
-				this.$http.get('/static/hot.json')
+				this.$http.get('static/hot.json')
 					.then(res => {
 						if(res.data.code === 200) {
 							this.hotList = res.data.result.hots;
