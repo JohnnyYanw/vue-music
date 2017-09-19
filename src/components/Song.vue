@@ -328,7 +328,7 @@
 		}
 		.m-song-info {
 			position: relative;
-			padding: 0 30px;
+			padding: 0 20px;
 			margin-top: 25px;
 			text-align: center;
 			color: #FFF;
