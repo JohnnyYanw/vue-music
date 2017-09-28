@@ -61,6 +61,9 @@
 </template>
 
 <script>
+	import Hotjson from 'assets/js/hot.json';
+	import LocalStorage from 'assets/js/localStorage';
+
 	export default({
 		name: 'search',
 		data() {
@@ -76,9 +79,9 @@
 			}
 		},
 		mounted() {
-			this.getHotList();
-			if(!!window.localStorage.getItem('search_history')) {
-				this.hisList = JSON.parse(window.localStorage.getItem('search_history'));
+			this.hotList = Hotjson.result.hots;
+			if(!!LocalStorage.get('search_history')) {
+				this.hisList = JSON.parse(LocalStorage.get('search_history'));
 			} else {
 				this.hisList = [];
 			}
@@ -94,17 +97,6 @@
 			}
 		},
 		methods: {
-			getHotList() {
-				this.$http.get('/static/hot.json')
-					.then(res => {
-						if(res.data.code === 200) {
-							this.hotList = res.data.result.hots;
-						}
-					})
-					.catch(err => {
-						console.log(err);
-					})
-			},
 			getResult(keyWords, evt) {
 				if(evt.target.value !== '') {
 					this.showDefault = false;
@@ -158,7 +150,7 @@
 						this.hisList.push(this.keyWords);
 					})
 				}
-				window.localStorage.setItem('search_history', JSON.stringify(this.hisList));
+				LocalStorage.set('search_history', JSON.stringify(this.hisList));
 			},
 			delKeyWords() {
 				this.keyWords = '';
@@ -168,7 +160,7 @@
 			},
 			delHistory(index) {
 				this.hisList.splice(index, 1);
-				window.localStorage.setItem('search_history', JSON.stringify(this.hisList));
+				LocalStorage.set('search_history', JSON.stringify(this.hisList));
 			},
 			// sessionStorage存储相应歌曲的信息
 			saveSession(item) {

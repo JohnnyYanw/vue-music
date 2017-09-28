@@ -15,6 +15,4 @@
  	}
  };
 
- export {
- 	LocalStorage
- };
+ export default LocalStorage;
