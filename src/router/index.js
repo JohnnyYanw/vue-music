@@ -33,7 +33,7 @@ const routes = [
 
 export default new Router({
 	// 是否使用 HTML5 history 模式 ==> 使用该模式时，打包后页面打开空白(???)
-	mode: 'history',
+	// mode: 'history',
 	linkActiveClass: 'active',
 	routes
 });

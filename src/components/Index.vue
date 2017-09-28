@@ -8,7 +8,7 @@
 					<router-link class="remd-li" v-for="(item, i) in list" :to="{path: 'playlist', query: {id: item.id}}" :key="i">
 						<dl>
 							<dt>
-								<img :src="item.coverImgUrl">
+								<img v-lazy="item.coverImgUrl">
 								<span class="audience-count">{{item.playCount | formatCount('万')}}</span>
 							</dt>
 							<dd>{{item.name}}</dd>
