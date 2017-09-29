@@ -69,14 +69,19 @@
 			},
 			get() {
 				this.isLoading = true;
-				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 3, true, 9))
+				this.$http.get(this.Api.getPlayListByWhere('全部', 'hot', 0, true))
 					.then(res => {
 						// console.log(res);
 						if(res.status === 200) {
-							let dataList = res.data.playlists;
+							// 将数组打乱
+							function randomArr() {
+								return Math.random() - 0.5;
+							};
+							let dataList = res.data.playlists.sort(randomArr);
 							for(let i = 0; i < dataList.length; i += 3) {
 								this.remdList.push(dataList.slice(i, i + 3));
 							}
+							this.remdList = this.randomNum(this.remdList, 2);
 							// console.log(this.remdList);
 							this.isLoading = false;
 						}
@@ -113,6 +118,26 @@
 						console.log(err);
 						this.loading = false;
 					});
+			},
+			// 随机取数组中的元素，且不重复
+			randomNum(arr, num) {
+				let newArr = [];
+				for(let k in arr) {
+					newArr.push(arr[k]);
+				}
+				let resultArr = [];
+				for(let i = 0; i < num; i++) {
+					if(newArr.length > 0) {
+						let oIndex = Math.floor(Math.random() * newArr.length);
+						// 随机取一个元素放入结果数组中
+						resultArr[i] = newArr[oIndex];
+						// 把放到结果数组中的元素删除
+						newArr.splice(oIndex, 1);
+					} else {
+						break;
+					}
+				}
+				return resultArr;
 			}
 		},
 		filters: {

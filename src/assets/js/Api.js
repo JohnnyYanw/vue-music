@@ -2,8 +2,10 @@ const _baseUrl = 'http://musicapi.duapp.com/api.php';
 const _baseUrl2 = 'https://api.imjad.cn/cloudmusic/';
 
 export default {
+	// limit ==> 限制条数
+	// offset ==> 从第几条开始
 	getPlayListByWhere(cat, order, offset, total, limit) {
-		return _baseUrl + '?type=topPlayList&cat=' + cat + '&offset=' + offset + '&limit=' + limit;
+		return _baseUrl + '?type=topPlayList&cat=' + cat + '&offset=' + offset;
 	},
 	getLrc(id) {
 		return _baseUrl2 + '?type=lyric&id=' + id;
