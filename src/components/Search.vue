@@ -40,7 +40,7 @@
 		</div>
 		<div class="loading-img" v-if="isLoading"></div>
 		<div class="m-search-result" v-if="showList">
-			<section class="m-song-list">
+			<section class="m-song-list" v-if="songsList !== undefined">
 				<div class="song-item" v-for="(item, index) in songsList" @click="saveSession(item)" :key="index">
 					<div class="item-wrap t-bd">
 						<div class="item-img">
@@ -56,7 +56,9 @@
 					</div>
 				</div>
 			</section>
+			<section class="no-songs" v-else>对不起，您要找的资源不存在哦。。。</section>
 		</div>
+
 	</div>
 </template>
 
@@ -119,21 +121,23 @@
 						if(res.data.code === 200) {
 							this.songsList = res.data.result.songs;
 							// console.log(this.songsList);
-							this.songsList.forEach((item, index) => {
-								let singers = [];
-								for(let i = 0; i < item.ar.length; i++) {
-									singers.push(item.ar[i].name);
-								}
-								for(let j = 0; j < singers.length - 1; j++) {
-									if(singers.length > 1) {
-										singers[j] += ' /';
-										singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+							if(this.songsList !== undefined) {
+								this.songsList.forEach((item, index) => {
+									let singers = [];
+									for(let i = 0; i < item.ar.length; i++) {
+										singers.push(item.ar[i].name);
 									}
-								}
-								item.singer = singers.join('');
-								this.isLoading = false;
-								this.showList = true;
-							});
+									for(let j = 0; j < singers.length - 1; j++) {
+										if(singers.length > 1) {
+											singers[j] += ' /';
+											singers[singers.length - 1] = ' ' + singers[singers.length - 1];
+										}
+									}
+									item.singer = singers.join('');
+								});
+							}
+							this.isLoading = false;
+							this.showList = true;
 						}
 					})
 					.catch(err => {
@@ -427,6 +431,10 @@
 					}
 				}
 			}
+		}
+		.no-songs {
+			padding: 8px 10px 0;
+			font-size: 15px;
 		}
 	}
 </style>
