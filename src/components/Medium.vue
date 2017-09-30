@@ -3,9 +3,9 @@
 		<app-header></app-header>
 		<div class="g-content">
 			<app-nav></app-nav>
-			<!-- <keep-alive> -->
-			<router-view class="tab-content"></router-view>
-			<!-- </keep-alive> -->
+			<keep-alive>
+				<router-view class="tab-content"></router-view>
+			</keep-alive>
 		</div>
 	</div>
 </template>
