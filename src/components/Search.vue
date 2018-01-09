@@ -292,7 +292,9 @@
 		.m-history {
 			.item {
 				display: flex;
+				display: -webkit-flex;
 				align-items: center;
+				-webkit-align-items: center;
 				height: 45px;
 				.history-svg {
 					width: 15px;
@@ -302,9 +304,12 @@
 				}
 				.history {
 					flex: 1;
+					-webkit-flex: 1;
 					width: 0%;
 					display: flex;
+					display: -webkit-flex;
 					align-items: center;
+					-webkit-align-items: center;
 					height: 45px;
 					font-size: 14px;
 					color: #333;
@@ -312,7 +317,8 @@
 						border-bottom-width: 1px;
 					}
 					.his-txt {
-						flex: 1;;
+						flex: 1;
+						-webkit-flex: 1;
 						width: 0%;
 						margin-right: 10px;
 					}
@@ -344,7 +350,9 @@
 			}
 			.item {
 				display: flex;
+				display: -webkit-flex;
 				align-items: center;
+				-webkit-align-items: center;
 				height: 45px;
 				padding-left: 10px;
 				.search-svg {
@@ -355,6 +363,7 @@
 				}
 				span {
 					flex: 1;
+					-webkit-flex: 1;
 					width: 0%;
 					line-height: 45px;
 					padding-right: 10px;
@@ -375,8 +384,10 @@
 				color: #333;
 				.item-wrap {
 					display: flex;
-					width: 100%;
+					display: -webkit-flex;
 					align-items: center;
+					-webkit-align-items: center;
+					width: 100%;
 					height: 60px;
 					padding: 5px 10px 5px 0;
 					box-sizing: border-box;
@@ -385,16 +396,20 @@
 					}
 					.item-img {
 						display: flex;
+						display: -webkit-flex;
 						align-items: center;
+						-webkit-align-items: center;
 						width: 50px;
 						height: 50px;
 						margin-right: 10px;
 						img {
 							width: 100%;
+							height: 100%;
 						}
 					}
 					.item-info {
 						flex: 1;
+						-webkit-flex: 1;
 						width: 0%;
 						.song-info {
 							width: 100%;
@@ -420,7 +435,9 @@
 					}
 					.item-icon {
 						display: flex;
+						display: -webkit-flex;
 						align-items: center;
+						-webkit-align-items: center;
 						padding: 0 10px;
 						.icon-play {
 							display: block;

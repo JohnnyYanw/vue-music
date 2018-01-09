@@ -22,13 +22,21 @@
 	.nav-tab {
 		position: fixed;
 		top: 60px;
+		left: 50%;
+		transform: translateX(-50%);
 		display: flex;
+		display: -webkit-flex;
 		justify-content: center;
+		-webkit-justify-content: center;
 		align-items: center;
+		-webkit-align-items: center;
 		width: 100%;
 		height: 40px;
+		min-width: 320px;
+		max-width: 640px;
 		line-height: 40px;
-		z-index: 99;
+		background-color: #FFF;
+		z-index: 100;
 		&::after {
 			border-bottom-width: 1px;
 			border-color: #ccc;

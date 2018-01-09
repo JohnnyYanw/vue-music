@@ -21,7 +21,7 @@
 		</section>
 		<section class="list-desc">
 			<div class="desc-tags">
-				标签：<em class="tag t-bd" v-for="item in tags">{{item}}</em>
+				标签：<em class="tag t-bd" v-for="(item, index) in tags" :key="index">{{item}}</em>
 			</div>
 			<div class="desc-info">
 				<pre>简介：{{desc}}</pre>
@@ -159,6 +159,7 @@
 			.head-wrap {
 				position: relative;
 				display: flex;
+				display: -webkit-flex;
 				z-index: 2;
 				.head-fl {
 					width: 114px;
@@ -175,6 +176,7 @@
 				}
 				.head-fr {
 					flex: 1;
+					-webkit-flex: 1;
 					width: 0%;
 					margin-left: 15px;
 					.head-title {
@@ -192,6 +194,7 @@
 					.creator {
 						position: relative;
 						display: flex;
+						display: -webkit-flex;
 						margin-top: 20px;
 						color: #DDD;
 						span {
@@ -209,6 +212,7 @@
 						}
 						.name {
 							flex: 1;
+							-webkit-flex: 1;
 							width: 0%;
 							overflow: hidden;
 							white-space: nowrap;
@@ -265,23 +269,30 @@
 			}
 			.song-item {
 				display: flex;
+				display: -webkit-flex;
 				.item-fl {
 					display: flex;
+					display: -webkit-flex;
 					width: 40px;
 					align-items: center;
+					-webkit-align-items: center;
 					justify-content: center;
+					-webkit-justify-content: center;
 					font-size: 17px;
 					color: #999;
 				}
 				.item-fr {
 					display: flex;
+					display: -webkit-flex;
 					flex: 1;
+					-webkit-flex: 1;
 					width: 0%;
 					&::after {
 						border-bottom-width: 1px;
 					}
 					.item-left {
 						flex: 1;
+						-webkit-flex: 1;
 						width: 0%;
 						padding: 5px 0;
 						font-size: 17px;
@@ -308,7 +319,9 @@
 					}
 					.item-right {
 						display: flex;
+						display: -webkit-flex;
 						align-items: center;
+						-webkit-align-items: center;
 						padding: 0 10px;
 						.icon-play {
 							display: block;

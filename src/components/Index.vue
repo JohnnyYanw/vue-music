@@ -4,7 +4,7 @@
 			<h2 class="item-title">推荐歌单</h2>
 			<div class="remd-songs">
 				<div class="loading-img" v-if="isLoading"></div>
-				<div class="remd-ul" v-for="list in remdList">
+				<div class="remd-ul" v-for="(list, index) in remdList" :key="index">
 					<router-link class="remd-li" v-for="(item, i) in list" :to="{path: 'playlist', query: {id: item.id}}" :key="i">
 						<dl>
 							<dt>
@@ -179,9 +179,11 @@
 				padding-bottom: 20px;
 				.remd-ul {
 					display: flex;
+					display: -webkit-flex;
 					padding-bottom: 15px;
 					.remd-li {
 						flex: 1;
+						-webkit-flex: 1;
 						color: #333;
 						&:nth-child(2) {
 							padding: 0 2px;
@@ -229,13 +231,16 @@
 				min-height: 20px;
 				.song-item {
 					display: flex;
+					display: -webkit-flex;
 					padding-left: 10px;
 					color: #333;
 					.item-bd {
 						position: relative;
 						display: flex;
+						display: -webkit-flex;
 						flex: 1;
-						width: 0;
+						-webkit-flex: 1;
+						width: 0%;
 						&::after {
 							position: absolute;
 							top: 0;
@@ -253,6 +258,7 @@
 						}
 						.item-left {
 							flex: 1;
+							-webkit-flex: 1;
 							width: 0%;
 							padding: 5px 0;
 							.song-info {
@@ -278,7 +284,9 @@
 						}
 						.item-right {
 							display: flex;
+							display: -webkit-flex;
 							align-items: center;
+							-webkit-align-items: center;
 							padding: 0 10px;
 							.icon-play {
 								display: block;

@@ -23,13 +23,11 @@
 		font-size: 12px;
 		color: #666;
 		overflow-x: hidden;
-		// 父元素添加该属性，子元素绝对定位时
-		// 相对于该元素定位，而不是浏览器窗口
-		transform: translate(0, 0);
 	}
 	.g-body {
-		height: 100%;
 		width: 100%;
+		height: 100%;
+		overflow-y: auto;
 		.loading-img {
 			position: absolute;
 			left: 0;
@@ -39,7 +37,7 @@
 			background: url(./assets/images/loading.gif) 50% no-repeat;
 			background-size: 20px;
 			background-color: #FFF;
-			z-index: 100;
+			z-index: 99;
 		}
 		.t-bd {
 			position: relative;
