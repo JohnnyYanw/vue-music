@@ -29,7 +29,7 @@ const routes = [{
 
 export default new Router({
     // 是否使用 HTML5 history 模式
-    mode: 'history',
+    // mode: 'history',
     linkActiveClass: 'active',
     routes
 });
